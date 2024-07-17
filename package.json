@@ -1,0 +1,10 @@
+{
+  "name": "live-chat-api",
+  "version": "1.0.0",
+  "scripts": {
+    "build": "netlify-lambda build src"
+  },
+  "dependencies": {
+    "firebase": "^10.12.3"
+  }
+}
