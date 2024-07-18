@@ -2,14 +2,17 @@
   "name": "live-chat-api",
   "version": "1.0.0",
   "scripts": {
-    "build": "netlify-lambda build src"
+    
   },
   "dependencies": {
-    "firebase": "^10.12.3"
+    "firebase": "^10.12.3",
+    "firebase-admin": "^12.2.0"
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^7.16.1",
     "@typescript-eslint/parser": "^7.16.1",
-    "eslint": "^8.57.0"
+    "eslint": "^8.57.0",
+    "eslint-config-google": "^0.14.0",
+    "eslint-plugin-import": "^2.29.1"
   }
 }

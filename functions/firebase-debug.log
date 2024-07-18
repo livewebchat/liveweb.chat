@@ -1,0 +1,14 @@
+[debug] [2024-07-18T19:32:54.598Z] ----------------------------------------------------------------------
+[debug] [2024-07-18T19:32:54.599Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\er-o2\AppData\Roaming\npm\node_modules\firebase-tools\lib\bin\firebase.js deploy
+[debug] [2024-07-18T19:32:54.599Z] CLI Version:   13.10.2
+[debug] [2024-07-18T19:32:54.600Z] Platform:      win32
+[debug] [2024-07-18T19:32:54.600Z] Node Version:  v21.7.1
+[debug] [2024-07-18T19:32:54.600Z] Time:          Thu Jul 18 2024 22:32:54 GMT+0300 (GMT+03:00)
+[debug] [2024-07-18T19:32:54.600Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2024-07-18T19:32:54.636Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2024-07-18T19:32:54.636Z] > authorizing via signed-in user (erenkarakocw@gmail.com)
+[debug] [2024-07-18T19:32:54.636Z] [iam] checking project live-chat-web-api for permissions ["cloudconfig.configs.get","cloudconfig.configs.update","cloudfunctions.functions.create","cloudfunctions.functions.delete","cloudfunctions.functions.get","cloudfunctions.functions.list","cloudfunctions.functions.update","cloudfunctions.operations.get","datastore.indexes.create","datastore.indexes.delete","datastore.indexes.list","datastore.indexes.update","firebase.projects.get","firebasedatabase.instances.update","firebasehosting.sites.update","firebaserules.releases.create","firebaserules.releases.update","firebaserules.rulesets.create",null]
+[debug] [2024-07-18T19:32:54.638Z] >>> [apiv2][query] POST https://cloudresourcemanager.googleapis.com/v1/projects/live-chat-web-api:testIamPermissions [none]
+[debug] [2024-07-18T19:32:54.638Z] >>> [apiv2][(partial)header] POST https://cloudresourcemanager.googleapis.com/v1/projects/live-chat-web-api:testIamPermissions x-goog-quota-user=projects/live-chat-web-api
+[debug] [2024-07-18T19:32:54.638Z] >>> [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/live-chat-web-api:testIamPermissions {"permissions":["cloudconfig.configs.get","cloudconfig.configs.update","cloudfunctions.functions.create","cloudfunctions.functions.delete","cloudfunctions.functions.get","cloudfunctions.functions.list","cloudfunctions.functions.update","cloudfunctions.operations.get","datastore.indexes.create","datastore.indexes.delete","datastore.indexes.list","datastore.indexes.update","firebase.projects.get","firebasedatabase.instances.update","firebasehosting.sites.update","firebaserules.releases.create","firebaserules.releases.update","firebaserules.rulesets.create",null]}
