@@ -119,12 +119,8 @@ exports.sendMessage = functions.https.onRequest((req, res) => {
         timestamp: admin.firestore.FieldValue.serverTimestamp(),
       };
 
-      const currentMessages = sessionSnapshot.data();
-      const updatedMessages = currentMessages || [];
-      updatedMessages.push(newMessage);
-
       await sessionRef.update({
-        messages: updatedMessages,
+        messages: admin.firestore.FieldValue.arrayUnion(newMessage),
         lastActive: admin.firestore.FieldValue.serverTimestamp(),
       });
 
