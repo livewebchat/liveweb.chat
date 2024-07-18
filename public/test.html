@@ -42,16 +42,14 @@
     color: #202020;
     font-weight: 100;
     max-width: 80%;
-  }
-
-  .message-left {
-    margin-right: auto;
-    background-color: #ddd;
-  }
-
-  .message-right {
     margin-left: auto;
     background-color: #fff;
+  }
+
+  .message.message-left {
+    margin-right: auto;
+    margin-left: 0;
+    background-color: #ddd;
   }
 
   #chat_actions {
@@ -92,12 +90,7 @@
     </div>
 
     <div id="chat_body">
-      <div id="messages_wrapper">
-        <div class="message message-left">asd</div>
-        <div class="message message-right">asd</div>
-        <div class="message message-left">asd</div>
-        <div class="message message-left">asd</div>
-      </div>
+      <div id="messages_wrapper"></div>
 
       <div id="chat_actions">
         <input id="message_input" type="textarea" placeholder="Message..." />
@@ -139,6 +132,8 @@
   const log = document.querySelector("#log")
   const chatWith = document.querySelector("#chat_header_user_email")
 
+  const messagesWrapper = document.querySelector("#messages_wrapper")
+
   const messageInput = document.querySelector("#message_input")
   const messageSend = document.querySelector("#message_send")
 
@@ -165,14 +160,9 @@
     return await response.json()
   }
 
-  const sendMessage = async (sessionId, sender, text) => {
-    const response = await fetch(`${API_URL}/sendMessage`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({ sessionId, sender, text })
-    })
+  const receiveMessages = async (sessionId) => {
+    const response = await fetch(`${API_URL}/receiveMessages?sessionId=${encodeURIComponent(sessionId)}`);
+    return await response.json()
   }
 
   const convertFirestoreTimestamp = (timestamp) => {
@@ -190,6 +180,18 @@
     metaDomain.innerHTML = session.domain
     metaCreatedAt.innerHTML = convertFirestoreTimestamp(session.createdAt)
     metaLastActive.innerHTML = convertFirestoreTimestamp(session.lastActive)
+
+    session.messages.forEach((message) => {
+      const messageEl = document.createElement("div")
+      messageEl.classList.add("message")
+      messageEl.innerHTML = message.text
+
+      if (message.sender === session.userEmail) {
+        messageEl.classList.add("message-left")
+      }
+
+      messagesWrapper.appendChild(messageEl)
+    })
 
     messageSend.addEventListener("click", () => {
       sendMessage("yIK5XAyHc1nGywDPD9oS", session.userEmail, messageInput.value)
