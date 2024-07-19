@@ -155,6 +155,18 @@
     return await response.json()
   }
 
+  const sendMessage = async (sessionId, sender, text) => {
+    const response = await fetch(`${API_URL}/sendMessage`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ sessionId, sender, text })
+    })
+
+    return await response.json()
+  }
+
   const getSession = async (userEmail) => {
     const response = await fetch(`${API_URL}/getSession?userEmail=${encodeURIComponent(userEmail)}`);
     return await response.json()

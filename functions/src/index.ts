@@ -102,6 +102,12 @@ exports.sendMessage = functions.https.onRequest((req, res) => {
 
     try {
       const {sessionId, sender, text} = req.body;
+
+      if (!sessionId || !sender || !text) {
+        res.status(400).send({error: "Invalid input parameters"});
+        return;
+      }
+
       const sessionRef = db.collection("chatSessions").doc(sessionId);
 
       const sessionSnapshot = await sessionRef.get();
@@ -113,10 +119,8 @@ exports.sendMessage = functions.https.onRequest((req, res) => {
       }
 
       const newMessage = {
-        id: Date.now().toString(),
         sender,
         text,
-        timestamp: admin.firestore.FieldValue.serverTimestamp(),
       };
 
       await sessionRef.update({
@@ -126,42 +130,10 @@ exports.sendMessage = functions.https.onRequest((req, res) => {
 
       res.status(200).send({
         message: "Message sent successfully",
+        newMessage,
       });
     } catch (error) {
-      res.status(500).send({error: error});
-    }
-  });
-});
-
-// Receive messages
-exports.receiveMessages = functions.https.onRequest((req, res) => {
-  corsHandler(req, res, async () => {
-    if (req.method !== "GET") {
-      res.status(405).send("Method Not Allowed");
-      return;
-    }
-
-    try {
-      const sessionId = req.query.sessionId as string;
-      if (!sessionId) {
-        res.status(400).send({
-          error: "Session ID is required",
-        });
-        return;
-      }
-
-      const sessionRef = db.collection("chatSessions").doc(sessionId);
-      const sessionSnapshot = await sessionRef.get();
-      if (!sessionSnapshot.exists) {
-        res.status(404).send({
-          error: "Session not found",
-        });
-        return;
-      }
-
-      res.status(200).send(sessionSnapshot.data());
-    } catch (error) {
-      res.status(500).send({error: "Internal Server Error"});
+      res.status(500).send({error});
     }
   });
 });
@@ -181,7 +153,6 @@ exports.checkInactiveSessions =
         .get();
 
       if (snapshot.empty) {
-        console.log("No inactive sessions found.");
         return;
       }
 
@@ -193,7 +164,6 @@ exports.checkInactiveSessions =
       });
 
       await batch.commit();
-      console.log("Inactive sessions updated successfully.");
     } catch (error) {
       console.error("Error updating inactive sessions:", error);
     }
