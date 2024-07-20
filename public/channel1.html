@@ -88,7 +88,6 @@
     }
 
     #log {
-      display: none;
       height: 460px;
       width: 300px;
       margin: 0;
@@ -248,7 +247,7 @@
     const handleSendMessage = async () => {
       const text = messageInput.value;
       if (text.trim() !== "") {
-        await sendMessage(sessionId, "sender2", text);
+        await sendMessage(sessionId, "example@mail.com", text);
         messageInput.value = "";
       }
     }
