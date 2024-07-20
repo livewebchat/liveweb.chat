@@ -119,6 +119,7 @@ exports.sendMessage = functions.https.onRequest((req, res) => {
       }
 
       const newMessage = {
+        id: Date.now().toString(),
         sender,
         text,
       };
@@ -134,6 +135,46 @@ exports.sendMessage = functions.https.onRequest((req, res) => {
       });
     } catch (error) {
       res.status(500).send({error});
+    }
+  });
+});
+
+// Receive new messages
+exports.receiveMessages = functions.https.onRequest((req, res) => {
+  corsHandler(req, res, async () => {
+    if (req.method !== "GET") {
+      res.status(405).send("Method Not Allowed");
+      return;
+    }
+
+    try {
+      const sessionId = req.query.sessionId;
+      if (!sessionId) {
+        res.status(400).send({error: "Session ID is required"});
+        return;
+      }
+
+      const sessionRef =
+        db.collection("chatSessions").doc(sessionId.toString());
+      const sessionSnapshot = await sessionRef.get();
+      if (!sessionSnapshot.exists) {
+        res.status(404).send({
+          error: "Session not found",
+        });
+        return;
+      }
+
+      const sessionData = sessionSnapshot.data();
+
+      if (!sessionData) {
+        res.status(400).send({error: "Session Data doesn't exist"});
+        return;
+      }
+
+      res.status(200).send(sessionData.messages);
+    } catch (error) {
+      console.error("Error fetching messages:", error);
+      res.status(500).send({error: "Internal Server Error"});
     }
   });
 });
