@@ -215,7 +215,7 @@
       metaCreatedAt.innerHTML = convertFirestoreTimestamp(sessionData.createdAt);
       metaLastActive.innerHTML = convertFirestoreTimestamp(sessionData.lastActive);
 
-      messagesWrapper.innerHTML = ""; // Clear existing messages
+      messagesWrapper.innerHTML = "";
       sessionData.messages.forEach((message) => {
         const messageEl = document.createElement("div");
         messageEl.classList.add("message");
@@ -230,11 +230,10 @@
         messagesWrapper.appendChild(messageEl);
       });
 
-      messagesWrapper.scrollTop = messagesWrapper.scrollHeight; // Scroll to the bottom
+      messagesWrapper.scrollTop = messagesWrapper.scrollHeight;
     };
 
-    const sessionId = "yIK5XAyHc1nGywDPD9oS"; // Replace with actual session ID
-
+    const sessionId = "yIK5XAyHc1nGywDPD9oS";
     const sessionRef = doc(db, "chatSessions", sessionId);
 
     onSnapshot(sessionRef, (doc) => {

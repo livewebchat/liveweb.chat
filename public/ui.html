@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Live Chat</title>
+  <style>
+
+  </style>
+</head>
+
+<body>
+  <div id="chat_wrapper">
+    <div id="chat_header">
+      <span>Chat with: <span id="chat_header_user_email"></span></span>
+      <button type="button">&times;</button>
+    </div>
+
+    <div id="chat_body">
+      <div id="messages_wrapper"></div>
+
+      <div id="chat_actions">
+        <input id="message_input" type="text" placeholder="Message..." autocomplete="off" />
+        <button type="button" id="message_send">Send</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="live-chat-api.js" type="module"></script>
+</body>
+
+</html>
