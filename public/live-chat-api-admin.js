@@ -20,7 +20,7 @@ const app = initializeApp(firebaseConfig)
 const db = getFirestore(app)
 
 const API_URL = "https://us-central1-live-chat-web-api.cloudfunctions.net"
-let CURRENT_USER_IP = ""
+let CURRENT_USER_IP = "admin"
 let CURRENT_SESSION_ID = ""
 
 async function getUserIP() {
@@ -315,9 +315,7 @@ const updateUI = (sessionData) => {
 }
 
 async function initializeSession() {
-  CURRENT_USER_IP = await getUserIP()
-  const session = await getSession(CURRENT_USER_IP)
-  CURRENT_SESSION_ID = session.id
+  CURRENT_SESSION_ID = "yIK5XAyHc1nGywDPD9oS"
 
   const sessionRef = doc(db, "chatSessions", CURRENT_SESSION_ID)
 

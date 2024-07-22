@@ -27,7 +27,7 @@ exports.createSession = functions.https.onRequest((req, res) => {
     }
 
     try {
-      const {userEmail} = req.body;
+      const {userIPaddress} = req.body;
 
       const referer = req.get("Referer") || "Unknown";
       let domain = "Unknown";
@@ -36,7 +36,7 @@ exports.createSession = functions.https.onRequest((req, res) => {
 
       const sessionRef = db.collection("chatSessions").doc();
       const sessionData = {
-        userEmail,
+        userIPaddress,
         active: true,
         messages: [],
         createdAt: admin.firestore.FieldValue.serverTimestamp(),
@@ -55,7 +55,7 @@ exports.createSession = functions.https.onRequest((req, res) => {
   });
 });
 
-// Get session by userEmail
+// Get session by userIPaddress
 exports.getSession = functions.https.onRequest(async (req, res) => {
   corsHandler(req, res, async () => {
     if (req.method !== "GET") {
@@ -64,20 +64,20 @@ exports.getSession = functions.https.onRequest(async (req, res) => {
     }
 
     try {
-      const userEmail = req.query.userEmail;
-      if (!userEmail) {
-        res.status(400).send({error: "User email is required"});
+      const userIPaddress = req.query.userIPaddress;
+      if (!userIPaddress) {
+        res.status(400).send({error: "User IP address is required"});
         return;
       }
 
       const snapshot = await db.collection("chatSessions")
-        .where("userEmail", "==", userEmail)
+        .where("userIPaddress", "==", userIPaddress)
         .where("active", "==", true)
         .limit(1)
         .get();
 
       if (snapshot.empty) {
-        res.status(404).send({message: "No session found for this email"});
+        res.status(404).send({message: "No session found for this IP"});
         return;
       }
 
