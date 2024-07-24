@@ -47,7 +47,7 @@ exports.createSession = functions.https.onRequest((req, res) => {
       await sessionRef.set(sessionData);
       res.status(200).send({
         message: "Session created successfully",
-        sessionId: sessionRef.id,
+        id: sessionRef.id,
       });
     } catch (error) {
       res.status(500).send({error: "Internal Server Error"});

@@ -137,6 +137,29 @@
   overflow-y: scroll;
 }
 
+#chatInitializingLoader {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  width: 100%;
+  color: #8f9bb7;
+}
+
+#chatNoMessages {
+  user-select: none;
+  pointer-events: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  width: 100%;
+  color: #8f9bb7;
+  font-size: 12px;
+  font-weight: 600;
+  text-align: center;
+}
+
 .chatMessage {
   position: relative;
   display: flex;
@@ -151,7 +174,6 @@
   border: 1px solid #ddd;
   background-color: #fff;
   color: #060b27;
-  overflow: hidden;
   font-size: 14px;
   line-height: 18px;
 }
@@ -193,7 +215,7 @@
   right: -18px;
   height: 12px;
   width: 12px;
-  color: #ccc;
+  color: #8f9bb7;
 }
 
 #chatLastMessageTime {

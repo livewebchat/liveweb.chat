@@ -231,6 +231,14 @@ const chatBody = document.createElement("div")
 chatBody.id = "chatBody"
 chat.appendChild(chatBody)
 
+const chatInitializingLoader = document.createElement("span")
+chatInitializingLoader.id = "chatInitializingLoader"
+chatInitializingLoader.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><g stroke="currentColor"><circle cx="12" cy="12" r="9.5" fill="none" stroke-linecap="round" stroke-width="3"><animate attributeName="stroke-dasharray" calcMode="spline" dur="1.5s" keySplines="0.42,0,0.58,1;0.42,0,0.58,1;0.42,0,0.58,1" keyTimes="0;0.475;0.95;1" repeatCount="indefinite" values="0 150;42 150;42 150;42 150"/><animate attributeName="stroke-dashoffset" calcMode="spline" dur="1.5s" keySplines="0.42,0,0.58,1;0.42,0,0.58,1;0.42,0,0.58,1" keyTimes="0;0.475;0.95;1" repeatCount="indefinite" values="0;-16;-59;-59"/></circle><animateTransform attributeName="transform" dur="2s" repeatCount="indefinite" type="rotate" values="0 12 12;360 12 12"/></g></svg>`
+
+const chatNoMessages = document.createElement("span")
+chatNoMessages.id = "chatNoMessages"
+chatNoMessages.innerHTML = `Ask about anything you wonder!`
+
 const chatBottomWrapper = document.createElement("div")
 chatBottomWrapper.id = "chatBottomWrapper"
 chat.appendChild(chatBottomWrapper)
@@ -265,18 +273,6 @@ document.addEventListener("click", (event) => {
   if (!onChat && !onFloatingButton) hideChat()
 })
 
-let isFirstInit = true
-floatingButton.addEventListener("click", () => {
-  isFirstInit = false
-
-  if (isFirstInit) {
-    const session = getSession(CURRENT_USER_IP)
-    console.log(session)
-  }
-
-  toggleChat()
-})
-
 chatSendButton.addEventListener("click", handleSendMessage)
 chatTextInput.addEventListener("keydown", (e) => {
   if (e.key === "Enter" && !e.shiftKey) {
@@ -298,28 +294,42 @@ const updateUI = (sessionData) => {
       chatHeaderStatusText.innerHTML = `${sessionData.remote.name}<span id="chatHeaderStatusAvailable">Available</span>`
     }
 
-    sessionData.messages.forEach((message) => {
-      createMessage({
-        from: message.sender,
-        text: message.text,
-        sending: false,
+    if (!sessionData.messages || !sessionData.messages.length) {
+      chatBody.appendChild(chatNoMessages)
+    } else {
+      sessionData.messages.forEach((message) => {
+        createMessage({
+          from: message.sender,
+          text: message.text,
+          sending: false,
+        })
       })
-    })
 
-    const lastActiveFormattedDate = convertFirestoreTimestampToReadable(
-      sessionData.lastActive
-    )
-    chatBody.innerHTML += `<span id="chatLastMessageTime">${lastActiveFormattedDate}</span>`
-    chatBody.scrollTop = chatBody.scrollHeight
+      const lastActiveFormattedDate = convertFirestoreTimestampToReadable(
+        sessionData.lastActive
+      )
+      chatBody.innerHTML += `<span id="chatLastMessageTime">${lastActiveFormattedDate}</span>`
+      chatBody.scrollTop = chatBody.scrollHeight
+    }
   }
 }
 
 async function initializeSession() {
-  CURRENT_USER_IP = await getUserIP()
-  const session = await getSession(CURRENT_USER_IP)
-  CURRENT_SESSION_ID = session.id
+  chatBody.appendChild(chatInitializingLoader)
 
-  const sessionRef = doc(db, "chatSessions", CURRENT_SESSION_ID)
+  CURRENT_USER_IP = await getUserIP()
+
+  let sessionRef = undefined
+  const session = await getSession(CURRENT_USER_IP)
+
+  if (session && session.active == true) {
+    CURRENT_SESSION_ID = session.id
+    sessionRef = doc(db, "chatSessions", CURRENT_SESSION_ID)
+  } else {
+    const newSession = await createSession(CURRENT_USER_IP)
+    CURRENT_SESSION_ID = newSession.id
+    sessionRef = doc(db, "chatSessions", CURRENT_SESSION_ID)
+  }
 
   onSnapshot(sessionRef, (doc) => {
     if (doc.exists()) {
@@ -329,4 +339,11 @@ async function initializeSession() {
   })
 }
 
-initializeSession()
+let isFirstInit = true
+floatingButton.addEventListener("click", async () => {
+  if (isFirstInit) {
+    toggleChat()
+    await initializeSession()
+    isFirstInit = false
+  }
+})
