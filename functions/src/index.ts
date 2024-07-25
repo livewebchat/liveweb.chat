@@ -34,7 +34,7 @@ exports.createSession = functions.https.onRequest((req, res) => {
       const url = new URL(referer);
       domain = getRootDomain(url.hostname);
 
-      const sessionRef = db.collection("chatSessions").doc();
+      const sessionRef = db.collection("sessions").doc();
       const sessionData = {
         userIPaddress,
         active: true,
@@ -70,7 +70,7 @@ exports.getSession = functions.https.onRequest(async (req, res) => {
         return;
       }
 
-      const snapshot = await db.collection("chatSessions")
+      const snapshot = await db.collection("sessions")
         .where("userIPaddress", "==", userIPaddress)
         .where("active", "==", true)
         .limit(1)
@@ -108,7 +108,7 @@ exports.sendMessage = functions.https.onRequest((req, res) => {
         return;
       }
 
-      const sessionRef = db.collection("chatSessions").doc(sessionId);
+      const sessionRef = db.collection("sessions").doc(sessionId);
 
       const sessionSnapshot = await sessionRef.get();
       if (!sessionSnapshot.exists) {
@@ -139,46 +139,6 @@ exports.sendMessage = functions.https.onRequest((req, res) => {
   });
 });
 
-// Receive new messages
-exports.receiveMessages = functions.https.onRequest((req, res) => {
-  corsHandler(req, res, async () => {
-    if (req.method !== "GET") {
-      res.status(405).send("Method Not Allowed");
-      return;
-    }
-
-    try {
-      const sessionId = req.query.sessionId;
-      if (!sessionId) {
-        res.status(400).send({error: "Session ID is required"});
-        return;
-      }
-
-      const sessionRef =
-        db.collection("chatSessions").doc(sessionId.toString());
-      const sessionSnapshot = await sessionRef.get();
-      if (!sessionSnapshot.exists) {
-        res.status(404).send({
-          error: "Session not found",
-        });
-        return;
-      }
-
-      const sessionData = sessionSnapshot.data();
-
-      if (!sessionData) {
-        res.status(400).send({error: "Session Data doesn't exist"});
-        return;
-      }
-
-      res.status(200).send(sessionData.messages);
-    } catch (error) {
-      console.error("Error fetching messages:", error);
-      res.status(500).send({error: "Internal Server Error"});
-    }
-  });
-});
-
 // Check inactive sessions
 exports.checkInactiveSessions =
   functions.pubsub.schedule("every 30 minutes").onRun(async () => {
@@ -186,7 +146,7 @@ exports.checkInactiveSessions =
     const INACTIVITY_PERIOD = 30 * 60 * 1000;
 
     try {
-      const sessionsRef = admin.firestore().collection("chatSessions");
+      const sessionsRef = admin.firestore().collection("sessions");
 
       const snapshot = await sessionsRef
         .where("active", "==", true)
