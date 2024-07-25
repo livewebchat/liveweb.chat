@@ -16,12 +16,11 @@ import { sendMessage } from "../../../app/modules/chat/core/_requests"
 import { convertTimestampToReadableOnlyHour } from "../../../app/modules/chat/core/_helpers"
 
 type Props = {
-  isDrawer?: boolean
   currentSession: Session
   setCurrentSession?: Dispatch<SetStateAction<Session | undefined>>
 }
 
-const ChatInner: FC<Props> = ({ isDrawer = false, currentSession }) => {
+const ChatInner: FC<Props> = ({ currentSession }) => {
   const chatBody = useRef<HTMLDivElement | null>(null)
 
   const [message, setMessage] = useState<string>("")
@@ -90,29 +89,19 @@ const ChatInner: FC<Props> = ({ isDrawer = false, currentSession }) => {
   return (
     <div
       className="card-body"
-      id={isDrawer ? "kt_drawer_chat_messenger_body" : "kt_chat_messenger_body"}
+      id="kt_chat_messenger_body"
       style={{ paddingTop: 0 }}
     >
       <div
         ref={chatBody}
-        className={clsx("scroll-y me-n5 pe-5", {
-          "h-300px h-lg-auto": !isDrawer,
-        })}
+        className="scroll-y me-n5 pe-5 h-300px h-lg-auto"
         data-kt-element="messages"
         data-kt-scroll="true"
         data-kt-scroll-activate="{default: false, lg: true}"
         data-kt-scroll-max-height="auto"
-        data-kt-scroll-dependencies={
-          isDrawer
-            ? "#kt_drawer_chat_messenger_header, #kt_drawer_chat_messenger_footer"
-            : "#kt_header, #kt_app_header, #kt_app_toolbar, #kt_toolbar, #kt_footer, #kt_app_footer, #kt_chat_messenger_header, #kt_chat_messenger_footer"
-        }
-        data-kt-scroll-wrappers={
-          isDrawer
-            ? "#kt_drawer_chat_messenger_body"
-            : "#kt_content, #kt_app_content, #kt_chat_messenger_body"
-        }
-        data-kt-scroll-offset={isDrawer ? "0px" : "5px"}
+        data-kt-scroll-dependencies="#kt_header, #kt_app_header, #kt_app_toolbar, #kt_toolbar, #kt_footer, #kt_app_footer, #kt_chat_messenger_header, #kt_chat_messenger_footer"
+        data-kt-scroll-wrappers="#kt_content, #kt_app_content, #kt_chat_messenger_body"
+        data-kt-scroll-offset="5px"
         style={{
           maxHeight: 400,
           overflowY: "auto",
@@ -184,14 +173,7 @@ const ChatInner: FC<Props> = ({ isDrawer = false, currentSession }) => {
           : ""}
       </div>
 
-      <div
-        className="card-footer pt-4"
-        id={
-          isDrawer
-            ? "kt_drawer_chat_messenger_footer"
-            : "kt_chat_messenger_footer"
-        }
-      >
+      <div className="card-footer pt-4" id="kt_chat_messenger_footer">
         <textarea
           className="form-control form-control-flush mb-3"
           rows={1}

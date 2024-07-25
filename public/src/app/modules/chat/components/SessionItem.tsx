@@ -47,6 +47,11 @@ export const SessionItem: React.FC<Props> = ({
             )}
             <span className={`ms-2${header ? " fs-3" : ""}`}>
               {session.userIPaddress}
+              {header && (
+                <span className="text-gray-600 ms-2 fs-7 fw-normal">
+                  {session.domain}
+                </span>
+              )}
             </span>
           </div>
           {!header && (

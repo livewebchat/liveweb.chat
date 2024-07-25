@@ -1,6 +1,5 @@
 import { collection, getDocs, query, where } from "firebase/firestore"
 import { firestore, functions } from "../../../../firebaseconfig"
-import { httpsCallable } from "firebase/functions"
 import { Session } from "./_models"
 
 const API_URL = import.meta.env.VITE_APP_FIREBASE_API_URL

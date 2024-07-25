@@ -27,7 +27,6 @@ async function getUserIP() {
   try {
     const response = await fetch("https://api.ipify.org?format=json")
     const data = await response.json()
-    const sessionId = await getSession(data.ip)
 
     return data.ip
   } catch (error) {
@@ -40,11 +39,6 @@ async function getUserIP() {
 /////////////////
 //// Helpers ////
 /////////////////
-
-const convertFirestoreTimestamp = (timestamp) => {
-  const date = new Date(timestamp.seconds * 1000)
-  return date.toLocaleString()
-}
 
 const convertFirestoreTimestampToReadable = (timestamp) => {
   const date = new Date(timestamp.seconds * 1000)
@@ -159,16 +153,12 @@ const toggleChat = () => {
   chatWrapper.classList.toggle("show")
 }
 
-const createMessage = ({ from, text, sending }) => {
+const createMessage = ({ from, text }) => {
   const message = document.createElement("div")
   message.classList.add("chatMessage")
   message.innerHTML = `<span>${urlify(text)}</span>`
 
   if (from === CURRENT_USER_IP) message.classList.add("chatMessageFrom")
-  if (sending) {
-    message.classList.add("chatMessageSending")
-    message.innerHTML += `<svg class="sendingMessageIndicator" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="currentColor" d="M12,1A11,11,0,1,0,23,12,11,11,0,0,0,12,1Zm0,20a9,9,0,1,1,9-9A9,9,0,0,1,12,21Z"/><rect width="2" height="7" x="11" y="6" fill="currentColor" rx="1"><animateTransform attributeName="transform" dur="9s" repeatCount="indefinite" type="rotate" values="0 12 12;360 12 12"/></rect><rect width="2" height="9" x="11" y="11" fill="currentColor" rx="1"><animateTransform attributeName="transform" dur="0.75s" repeatCount="indefinite" type="rotate" values="0 12 12;360 12 12"/></rect></svg>`
-  }
 
   chatBody.appendChild(message)
 }
@@ -176,7 +166,7 @@ const createMessage = ({ from, text, sending }) => {
 const handleSendMessage = async () => {
   const text = chatTextInput.value
   if (text.trim() !== "") {
-    createMessage({ from: CURRENT_USER_IP, text, sending: true })
+    createMessage({ from: CURRENT_USER_IP, text })
     chatTextInput.value = ""
     chatBody.scrollTop = chatBody.scrollHeight
     chatWrapper.classList.remove("has-value")
@@ -263,7 +253,7 @@ chatTextInputWrapper.appendChild(chatSendButton)
 /////////////////////////
 
 chatTextInput.addEventListener("keyup", (e) => {
-  if (e.target.value) chatWrapper.classList.add("has-value")
+  if (e.target.value.trim()) chatWrapper.classList.add("has-value")
   else chatWrapper.classList.remove("has-value")
 })
 
@@ -295,7 +285,6 @@ const updateUI = (sessionData) => {
         createMessage({
           from: message.sender,
           text: message.text,
-          sending: false,
         })
       })
 
