@@ -1,11 +1,19 @@
 import { FC, useEffect, useState } from "react"
+
+import { Session } from "../core/_models"
+
+import {
+  collection,
+  query,
+  orderBy,
+  onSnapshot,
+  getDocs,
+} from "firebase/firestore"
+import { firestore } from "../../../../firebaseconfig"
+
 import { KTIcon } from "../../../../_metronic/helpers"
 import { ChatInner } from "../../../../_metronic/partials"
 import { Content } from "../../../../_metronic/layout/components/Content"
-
-import { getAllSessions } from "../core/_requests"
-
-import { Session } from "../core/_models"
 
 import { ChatSidebarSkeleton } from "./ChatSidebarSkeleton"
 import { ChatSkeleton } from "./ChatSkeleton"
@@ -13,15 +21,67 @@ import { ChatSkeleton } from "./ChatSkeleton"
 import { SessionItem } from "./SessionItem"
 
 const Chat: FC = () => {
-  const [sessions, setSessions] = useState<Session[]>()
+  const [sessions, setSessions] = useState<Session[]>([])
   const [currentSession, setCurrentSession] = useState<Session>()
 
   useEffect(() => {
-    const fetchSession = async () => {
-      setSessions(await getAllSessions())
+    const fetchSessions = async () => {
+      const sessionsCollectionRef = collection(firestore, "sessions")
+      const q = query(sessionsCollectionRef, orderBy("createdAt", "desc"))
+
+      // Get initial sessions
+      const snapshot = await getDocs(q)
+      const initialSessions: Session[] = []
+      snapshot.forEach((doc) => {
+        const {
+          active,
+          domain,
+          userIPaddress,
+          messages,
+          lastActive,
+          createdAt,
+        } = doc.data()
+        const sessionData: Session = {
+          id: doc.id,
+          active,
+          createdAt,
+          domain,
+          lastActive,
+          messages,
+          userIPaddress,
+        }
+        initialSessions.push(sessionData)
+      })
+      setSessions(initialSessions)
+
+      snapshot.forEach((doc) => {
+        const sessionDocRef = doc.ref
+
+        onSnapshot(sessionDocRef, (docSnapshot) => {
+          if (docSnapshot.exists()) {
+            const updatedSessionData = {
+              id: docSnapshot.id,
+              active: docSnapshot.data().active,
+              createdAt: docSnapshot.data().createdAt,
+              domain: docSnapshot.data().domain,
+              lastActive: docSnapshot.data().lastActive,
+              messages: docSnapshot.data().messages,
+              userIPaddress: docSnapshot.data().userIPaddress,
+            }
+
+            setSessions((prevSessions) =>
+              prevSessions.map((session) =>
+                session.id === updatedSessionData.id
+                  ? updatedSessionData
+                  : session
+              )
+            )
+          }
+        })
+      })
     }
 
-    fetchSession()
+    fetchSessions()
   }, [])
 
   return (

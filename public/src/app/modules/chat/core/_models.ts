@@ -5,6 +5,7 @@ export interface Message {
   sender: string
   text: string
   sending: boolean
+  read: boolean
 }
 
 export interface Session {
