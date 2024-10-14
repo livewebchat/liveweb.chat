@@ -10,19 +10,33 @@
   height: 50px;
   width: 50px;
   color: #fff;
+  background-color: transparent;
+  z-index: 2;
+}
+
+#floatingButton::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  height: 50px;
+  width: 50px;
   background-color: #0026ff;
   box-shadow: 0 4px 15px -5px rgba(0, 0, 0, 0.5);
   border-radius: 50%;
   transition: all 0.15s ease-out;
-  z-index: 2;
 }
-#floatingButton:hover {
-  transform: scale(1.1);
+
+#floatingButton:hover::before {
+  transform: translate(-50%, -50%) scale(1.1);
 }
 
 #floatingButton svg {
+  position: relative;
   height: 24px;
   width: 24px;
+  z-index: 1;
 }
 
 #chatWrapper,
@@ -56,7 +70,7 @@
   transition: all 0.2s ease-out;
 }
 
-#chatWrapper.show #chat {
+#chatWrapper.chatWrapperShow #chat {
   opacity: 1;
   bottom: 90px;
   transform: unset;
@@ -128,6 +142,7 @@
   width: 24px;
   transition: all 0.1s ease-out;
 }
+
 #chatHeader #chatHideButton svg:hover {
   color: #060b27;
 }
@@ -282,12 +297,12 @@
   transition: opacity 0.15s ease-out;
 }
 
-#chatBottomWrapper #chatTextInputWrapper #chatTextInput:not(:empty)::before {
-  opacity: 0;
-}
-
 #chatBottomWrapper #chatTextInputWrapper #chatTextInput:empty::before {
   opacity: 1;
+}
+
+#chatBottomWrapper #chatTextInputWrapper #chatTextInput:not(:empty)::before {
+  opacity: 0;
 }
 
 #chatBottomWrapper #chatTextInputWrapper #chatTextInput a {
