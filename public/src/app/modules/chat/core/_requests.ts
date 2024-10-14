@@ -1,6 +1,8 @@
 import {
   collection,
+  doc,
   getDocs,
+  updateDoc,
   onSnapshot,
   orderBy,
   query,
@@ -19,8 +21,15 @@ export const getAllSessions = async (): Promise<Session[]> => {
     const sessions: Session[] = []
 
     sessionDocSnapshot.forEach((doc) => {
-      const { active, domain, userIPaddress, messages, lastActive, createdAt } =
-        doc.data()
+      const {
+        active,
+        domain,
+        userIPaddress,
+        messages,
+        lastActive,
+        createdAt,
+        remote,
+      } = doc.data()
       const sessionData: Session = {
         id: doc.id,
         active,
@@ -29,6 +38,7 @@ export const getAllSessions = async (): Promise<Session[]> => {
         messages,
         lastActive,
         createdAt,
+        remote,
       }
       sessions.push(sessionData)
     })
@@ -55,8 +65,15 @@ export const getActiveSessionByUserIP = async (
     const activeSessions: Session[] = []
 
     sessionDocSnapshot.forEach((doc) => {
-      const { active, domain, userIPaddress, messages, lastActive, createdAt } =
-        doc.data()
+      const {
+        active,
+        domain,
+        userIPaddress,
+        messages,
+        lastActive,
+        createdAt,
+        remote,
+      } = doc.data()
       const sessionData: Session = {
         id: doc.id,
         active,
@@ -65,6 +82,7 @@ export const getActiveSessionByUserIP = async (
         messages,
         lastActive,
         createdAt,
+        remote,
       }
       activeSessions.push(sessionData)
     })
@@ -73,6 +91,41 @@ export const getActiveSessionByUserIP = async (
   } catch (error) {
     console.error("Error fetching active sessions by user IP:", error)
     return []
+  }
+}
+
+export const setRemoteConnectedBySessionId = async (
+  sessionId: string,
+  name: string
+): Promise<void> => {
+  try {
+    const sessionDocRef = doc(firestore, "sessions", sessionId)
+
+    await updateDoc(sessionDocRef, {
+      "remote.connected": true,
+      "remote.name": name,
+    })
+
+    console.log(`Session ${sessionId} updated: remote.connected set to true`)
+  } catch (error) {
+    console.error("Error updating session remote connection:", error)
+  }
+}
+
+export const setRemoteDisonnectedBySessionId = async (
+  sessionId: string
+): Promise<void> => {
+  try {
+    const sessionDocRef = doc(firestore, "sessions", sessionId)
+
+    await updateDoc(sessionDocRef, {
+      "remote.connected": false,
+      "remote.name": "",
+    })
+
+    console.log(`Session ${sessionId} updated: remote.connected set to false`)
+  } catch (error) {
+    console.error("Error updating session remote connection:", error)
   }
 }
 

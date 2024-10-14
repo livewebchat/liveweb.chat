@@ -20,9 +20,18 @@ import { ChatSkeleton } from "./ChatSkeleton"
 
 import { SessionItem } from "./SessionItem"
 
+import {
+  setRemoteConnectedBySessionId,
+  setRemoteDisonnectedBySessionId,
+} from "../core/_requests"
+
+import { useAuth } from "../../auth"
+
 const Chat: FC = () => {
   const [sessions, setSessions] = useState<Session[]>([])
   const [currentSession, setCurrentSession] = useState<Session>()
+
+  const { currentUser } = useAuth()
 
   useEffect(() => {
     const fetchSessions = async () => {
@@ -40,6 +49,7 @@ const Chat: FC = () => {
           messages,
           lastActive,
           createdAt,
+          remote,
         } = doc.data()
         const sessionData: Session = {
           id: doc.id,
@@ -49,6 +59,7 @@ const Chat: FC = () => {
           lastActive,
           messages,
           userIPaddress,
+          remote,
         }
         initialSessions.push(sessionData)
       })
@@ -67,6 +78,7 @@ const Chat: FC = () => {
               lastActive: docSnapshot.data().lastActive,
               messages: docSnapshot.data().messages,
               userIPaddress: docSnapshot.data().userIPaddress,
+              remote: docSnapshot.data().remote,
             }
 
             setSessions((prevSessions) =>
@@ -83,6 +95,14 @@ const Chat: FC = () => {
 
     fetchSessions()
   }, [])
+
+  useEffect(() => {
+    if (currentSession)
+      setCurrentSession(
+        sessions.find((session) => session.id === currentSession.id)
+      )
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [sessions])
 
   return (
     <>
@@ -157,6 +177,31 @@ const Chat: FC = () => {
                             </span>
                           </div>
                         </div>
+                      </div>
+
+                      <div className="d-flex align-items-center">
+                        {currentSession.remote.connected ? (
+                          <button
+                            className="btn btn-danger btn-sm"
+                            onClick={() => {
+                              setRemoteDisonnectedBySessionId(currentSession.id)
+                            }}
+                          >
+                            Disconnect
+                          </button>
+                        ) : (
+                          <button
+                            className="btn btn-success btn-sm"
+                            onClick={() => {
+                              setRemoteConnectedBySessionId(
+                                currentSession.id,
+                                currentUser?.fullname ?? "Support Agent"
+                              )
+                            }}
+                          >
+                            Connect
+                          </button>
+                        )}
                       </div>
                     </div>
 

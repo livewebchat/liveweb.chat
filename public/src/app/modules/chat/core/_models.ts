@@ -16,4 +16,8 @@ export interface Session {
   lastActive: Timestamp
   messages: Message[]
   userIPaddress: string
+  remote: {
+    connected: boolean
+    name: string
+  }
 }

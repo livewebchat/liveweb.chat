@@ -5,6 +5,8 @@ import {
 } from "../core/_helpers"
 import { Session } from "../core/_models"
 import { Dispatch, SetStateAction, useEffect, useState } from "react"
+import { setRemoteConnectedBySessionId } from "../core/_requests"
+import { useAuth } from "../../auth"
 
 interface Props {
   session: Session
@@ -32,7 +34,7 @@ export const SessionItem: React.FC<Props> = ({
   return (
     <a
       className={`session-item d-flex flex-stack text-gray-900 rounded${
-        header ? "" : " cursor-pointer bg-hover-gray-100 p-4"
+        header ? "" : " cursor-pointer bg-hover-gray-100 p-4 w-full"
       }`}
       key={session.id}
       onClick={() => setCurrentSession && setCurrentSession(session)}
