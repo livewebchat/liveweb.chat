@@ -187,7 +187,7 @@ const Chat: FC = () => {
                               setRemoteDisonnectedBySessionId(currentSession.id)
                             }}
                           >
-                            Press to Disconnect
+                            Disconnect
                           </button>
                         ) : (
                           <button
@@ -211,7 +211,7 @@ const Chat: FC = () => {
                   <div className="card">
                     <div className="card-body min-h-500px d-flex justify-content-center align-items-center">
                       <span className="text-gray-600 fs-6 fw-bold">
-                        Choose a chat to start talking to people.
+                        Choose a chat and start talking to people.
                       </span>
                     </div>
                   </div>
