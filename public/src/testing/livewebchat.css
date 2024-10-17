@@ -353,7 +353,7 @@
 #chatBottomWrapper #chatTextInputWrapper #chatSendButton {
   position: absolute;
   top: 50%;
-  right: 10px;
+  right: 6px;
   transform: translateY(-50%);
   cursor: pointer;
   display: flex;
