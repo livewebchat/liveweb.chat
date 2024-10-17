@@ -20,7 +20,7 @@ RUN npm run build
 FROM httpd:alpine
 
 # Copy the build output to Apache's document root
-COPY --from=build /app/build/ /usr/local/apache2/htdocs/
+COPY --from=build /app/public/dist/ /usr/local/apache2/htdocs/
 
 # Expose the desired port (default for Apache is 80)
 EXPOSE 80
