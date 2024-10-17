@@ -1,10 +1,10 @@
-# Use the official Node.js image for building the app
-FROM node:16 AS build
+# Use the latest Node.js image for building the app
+FROM node:20 AS build
 
 # Set the working directory
 WORKDIR /app
 
-# Copy package.json and package-lock.json
+# Copy package.json and package-lock.json first to leverage Docker cache
 COPY package*.json ./
 
 # Install dependencies
