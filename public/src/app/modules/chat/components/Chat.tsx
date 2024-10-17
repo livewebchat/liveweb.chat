@@ -187,7 +187,7 @@ const Chat: FC = () => {
                               setRemoteDisonnectedBySessionId(currentSession.id)
                             }}
                           >
-                            Disconnect
+                            Press to Disconnect
                           </button>
                         ) : (
                           <button
