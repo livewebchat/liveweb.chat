@@ -7,6 +7,13 @@ import dotenv from "dotenv"
 
 dotenv.config({ path: "./.env" })
 
+const db = mysql.createPool({
+  host: process.env.DB_HOST,
+  database: process.env.DB_NAME,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASS,
+})
+
 const app = express()
 const server = http.createServer(app)
 const io = new Server(server, {
@@ -17,7 +24,6 @@ const io = new Server(server, {
   },
 })
 
-// Middleware
 app.use(
   cors({
     origin: "http://localhost:5173",
@@ -27,15 +33,6 @@ app.use(
 )
 app.use(express.json())
 
-// MySQL Database Connection
-const db = mysql.createPool({
-  host: process.env.DB_HOST,
-  database: process.env.DB_NAME,
-  user: process.env.DB_USER,
-  password: process.env.DB_PASS,
-})
-
-// Helper function to get the root domain
 const getRootDomain = (hostname: string) => {
   if (/^\d{1,3}(\.\d{1,3}){3}$/.test(hostname) || hostname === "localhost") {
     return "Localhost"
