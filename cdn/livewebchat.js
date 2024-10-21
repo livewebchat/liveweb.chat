@@ -109,7 +109,7 @@ function formatText(command) {
         break
       default:
         console.warn(`Unknown format command: ${command}`)
-        return // Don't do anything if the command is unknown
+        return
     }
 
     if (newHtml) {
