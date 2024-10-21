@@ -17,7 +17,7 @@ const app = express()
 const server = http.createServer(app)
 
 // Apply middlewares
-app.use(cors({ origin: "http://localhost:5173", credentials: true }))
+app.use(cors({ origin: "*" }))
 app.use(express.json())
 
 // Use session routes
@@ -25,7 +25,7 @@ app.use(sessionRoutes)
 
 // Setup Socket.IO
 const io = new Server(server, {
-  cors: { origin: "http://localhost:5173", credentials: true },
+  cors: { origin: "*" },
 })
 
 io.on("connection", (socket) => handleSocketConnection(io, socket))
