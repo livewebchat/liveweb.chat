@@ -88,33 +88,32 @@ const showToolbar = () => {
 }
 
 function formatText(command) {
-  const selection = window.getSelection();
+  const selection = window.getSelection()
   if (selection.rangeCount > 0) {
-    const range = selection.getRangeAt(0);
-    let selectedText = selection.toString();
-    let newHtml = null;
+    const range = selection.getRangeAt(0)
+    let selectedText = selection.toString()
+    let newHtml = null
 
     switch (command) {
-      case 'createLink':
-        let url = prompt("Enter the URL:");
+      case "createLink":
+        let url = prompt("Enter the URL:")
         if (url) {
-          newHtml = `<a href="${url}" target="_blank" rel="noopener noreferrer">${selectedText}</a>`;
+          newHtml = `<a href="${url}" target="_blank" rel="noopener noreferrer">${selectedText}</a>`
         }
-        break;
-      case 'bold':
-        newHtml = `<strong>${selectedText}</strong>`;
-        break;
-      case 'italic':
-        newHtml = `<em>${selectedText}</em>`;
-        break;
+        break
+      case "bold":
+        newHtml = `<strong>${selectedText}</strong>`
+        break
+      case "italic":
+        newHtml = `<em>${selectedText}</em>`
+        break
       default:
-        console.warn(`Unknown format command: ${command}`);
-        return; // Don't do anything if the command is unknown
+        console.warn(`Unknown format command: ${command}`)
+        return // Don't do anything if the command is unknown
     }
 
     if (newHtml) {
-      // Replace selected text with formatted text
-      document.execCommand('insertHTML', false, newHtml); 
+      document.execCommand("insertHTML", false, newHtml)
     }
   }
 }
