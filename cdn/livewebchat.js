@@ -1,4 +1,4 @@
-import { io } from "socket.io-client"
+import { io } from "https://cdn.socket.io/4.7.5/socket.io.esm.min.js"
 const API_URL = "https://liveweb.chat/api"
 const socket = io(API_URL)
 
