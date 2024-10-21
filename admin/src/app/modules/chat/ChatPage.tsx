@@ -1,17 +1,17 @@
-import {Route, Routes, Outlet} from 'react-router-dom'
-import {PageLink, PageTitle} from '../../../_metronic/layout/core'
-import {Chat} from './components/Chat'
+import { Route, Routes, Outlet } from "react-router-dom"
+import { PageLink, PageTitle } from "../../../_metronic/layout/core"
+import { Chat } from "./components/Chat"
 
 const chatBreadCrumbs: Array<PageLink> = [
   {
-    title: 'Chat',
-    path: '/chat',
+    title: "Chat",
+    path: "/chat",
     isSeparator: false,
     isActive: false,
   },
   {
-    title: '',
-    path: '',
+    title: "",
+    path: "",
     isSeparator: true,
     isActive: false,
   },

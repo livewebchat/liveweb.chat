@@ -1,4 +1,4 @@
-import { FC, useEffect, useState } from "react"
+import { FC, useEffect, useState, useRef } from "react"
 import { Session } from "../core/_models"
 import { io } from "socket.io-client"
 
@@ -8,13 +8,7 @@ import { Content } from "../../../../_metronic/layout/components/Content"
 
 import { ChatSidebarSkeleton } from "./ChatSidebarSkeleton"
 import { ChatSkeleton } from "./ChatSkeleton"
-
 import { SessionItem } from "./SessionItem"
-
-import {
-  setRemoteConnectedBySessionId,
-  setRemoteDisonnectedBySessionId,
-} from "../core/_requests"
 
 import { useAuth } from "../../auth"
 
@@ -26,19 +20,25 @@ const Chat: FC = () => {
   const [sessions, setSessions] = useState<Session[]>([])
   const [currentSession, setCurrentSession] = useState<Session | undefined>()
   const { currentUser } = useAuth()
+  const socketRef = useRef(socket)
 
   // Fetch sessions from server via Socket.IO
   useEffect(() => {
-    socket.emit("fetchSessions")
+    const fetchSessions = () => {
+      socketRef.current.emit("fetchSessions")
+    }
+
+    // Fetch sessions on component mount
+    fetchSessions()
 
     // Listen for sessions data
-    socket.on("sessionsData", (sessionsData: Session[]) => {
+    socketRef.current.on("sessionsData", (sessionsData: Session[]) => {
       setSessions(sessionsData)
       setSessionsLoading(false)
     })
 
     // Real-time update for individual sessions
-    socket.on("sessionUpdated", (updatedSession: Session) => {
+    socketRef.current.on("sessionUpdated", (updatedSession: Session) => {
       setSessions((prevSessions) =>
         prevSessions.map((session) =>
           session.id === updatedSession.id ? updatedSession : session
@@ -46,9 +46,34 @@ const Chat: FC = () => {
       )
     })
 
+    // Listen for session connection and disconnection events
+    socketRef.current.on("sessionConnected", (session) => {
+      console.log("Session connected:", session)
+      setSessions((prevSessions) =>
+        prevSessions.map((s) =>
+          s.id === session.id
+            ? { ...s, remote: { ...s.remote, connected: true } }
+            : s
+        )
+      )
+    })
+
+    socketRef.current.on("sessionDisconnected", (session) => {
+      console.log("Session disconnected:", session)
+      setSessions((prevSessions) =>
+        prevSessions.map((s) =>
+          s.id === session.id
+            ? { ...s, remote: { ...s.remote, connected: false } }
+            : s
+        )
+      )
+    })
+
     return () => {
-      socket.off("sessionsData")
-      socket.off("sessionUpdated")
+      socketRef.current.off("sessionsData")
+      socketRef.current.off("sessionUpdated")
+      socketRef.current.off("sessionConnected")
+      socketRef.current.off("sessionDisconnected")
     }
   }, [])
 
@@ -60,19 +85,20 @@ const Chat: FC = () => {
       )
       setCurrentSession(updatedSession)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [sessions])
+  }, [sessions, currentSession])
 
   // Handle session connect and disconnect via Socket.IO
   const handleSessionConnect = (sessionId: string) => {
-    socket.emit("connectToSession", {
+    console.log("Connecting to session:", sessionId)
+    socketRef.current.emit("connectToSession", {
       sessionId,
       agentName: currentUser?.fullname ?? "Support Agent",
     })
   }
 
   const handleSessionDisconnect = (sessionId: string) => {
-    socket.emit("disconnectFromSession", sessionId)
+    console.log("Disconnecting from session:", sessionId)
+    socketRef.current.emit("disconnectFromSession", sessionId)
   }
 
   return (
@@ -97,7 +123,6 @@ const Chat: FC = () => {
                         iconName="magnifier"
                         className="fs-2 text-lg-1 text-gray-500 position-absolute top-50 ms-5 translate-middle-y"
                       />
-
                       <input
                         type="text"
                         className="form-control form-control-solid px-15"
@@ -106,7 +131,6 @@ const Chat: FC = () => {
                       />
                     </div>
                   </div>
-
                   <div className="card-body pt-5" id="kt_chat_contacts_body">
                     <div
                       className="scroll-y me-n5 pe-5 h-200px h-lg-auto"
@@ -138,21 +162,21 @@ const Chat: FC = () => {
                         <div className="d-flex justify-content-center flex-column me-3">
                           <div className="fs-4 fw-bolder text-gray-900 me-1 py-4 lh-1">
                             <SessionItem session={currentSession} header />
-
                             <span
                               className={`badge badge-${
-                                currentSession.active ? "success" : "danger"
+                                currentSession.remote?.connected
+                                  ? "success"
+                                  : "danger"
                               } badge-circle w-10px h-10px me-1`}
                             ></span>
                             <span className="fs-7 fw-bold text-gray-500">
-                              {currentSession.active
-                                ? "Active"
+                              {currentSession.remote?.connected
+                                ? "Connected"
                                 : "Not available"}
                             </span>
                           </div>
                         </div>
                       </div>
-
                       <div className="d-flex align-items-center">
                         {currentSession.remote?.connected ? (
                           <button
@@ -175,7 +199,6 @@ const Chat: FC = () => {
                         )}
                       </div>
                     </div>
-
                     <ChatInner currentSession={currentSession} />
                   </div>
                 ) : (
@@ -202,7 +225,6 @@ const Chat: FC = () => {
                         iconName="magnifier"
                         className="fs-2 text-lg-1 text-gray-500 position-absolute top-50 ms-5 translate-middle-y"
                       />
-
                       <input
                         type="text"
                         className="form-control form-control-solid px-15"
@@ -211,7 +233,6 @@ const Chat: FC = () => {
                       />
                     </div>
                   </div>
-
                   <div className="card-body pt-5" id="kt_chat_contacts_body">
                     <div
                       className="scroll-y me-n5 pe-5 h-200px h-lg-auto"

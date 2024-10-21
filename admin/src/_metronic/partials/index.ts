@@ -29,4 +29,4 @@ export * from './modals/create-app-stepper/CreateAppModal'
 export * from './modals/select-location/SelectLocationModal'
 
 // chat
-export * from './chat/ChatInner'
+export * from '../../app/modules/chat/components/ChatInner'

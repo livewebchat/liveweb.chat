@@ -1,7 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Message, Session } from "./_models"
 
-const API_URL = "http://localhost:3000"
+const API_URL =
+  "http://" +
+  import.meta.env.VITE_APP_DB_HOST +
+  ":" +
+  import.meta.env.VITE_APP_DB_PORT
 
 // Fetch active session by user IP
 export const getActiveSessionByUserIP = async (
