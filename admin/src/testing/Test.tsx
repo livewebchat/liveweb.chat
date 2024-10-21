@@ -1,4 +1,4 @@
-import "./livewebchat.css"
-import "./livewebchat.js"
+import "https://cdn.liveweb.chat/livewebchat.css"
+import "https://cdn.liveweb.chat/livewebchat.js"
 
 export const Test = () => <></>

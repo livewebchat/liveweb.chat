@@ -1,5 +1,5 @@
 import { io } from "socket.io-client"
-const API_URL = "http://localhost:3000"
+const API_URL = "https://liveweb.chat/api"
 const socket = io(API_URL)
 
 let CURRENT_USER_IP = null
