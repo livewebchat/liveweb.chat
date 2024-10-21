@@ -1,9 +1,22 @@
+"use strict"
+
 import { io } from "https://cdn.socket.io/4.7.5/socket.io.esm.min.js"
 const API_URL = "https://liveweb.chat/api"
 const socket = io(API_URL)
 
 let CURRENT_USER_IP = null
 let CURRENT_SESSION_ID = null
+
+/////////////////
+//// Helpers ////
+/////////////////
+
+;(() => {
+  const cssLink = document.createElement("link")
+  cssLink.rel = "stylesheet"
+  cssLink.href = "https://cdn.liveweb.chat/livewebchat.css"
+  document.head.appendChild(cssLink)
+})()
 
 async function getUserIP() {
   try {
@@ -16,10 +29,6 @@ async function getUserIP() {
       "Unable to retrieve IP address"
   }
 }
-
-/////////////////
-//// Helpers ////
-/////////////////
 
 // Function to convert timestamp from the database to a readable format
 const convertToReadableDate = (timestamp) => {
@@ -78,46 +87,35 @@ const showToolbar = () => {
   }
 }
 
-const formatText = (command) => {
-  if (command === "createLink") {
-    let url = prompt("Enter the URL:")
+function formatText(command) {
+  const selection = window.getSelection();
+  if (selection.rangeCount > 0) {
+    const range = selection.getRangeAt(0);
+    let selectedText = selection.toString();
+    let newHtml = null;
 
-    const selection = window.getSelection()
-    if (selection.rangeCount > 0) {
-      const range = selection.getRangeAt(0)
-
-      const selectedNode = range.commonAncestorContainer
-      let linkNode =
-        selectedNode.nodeType === Node.ELEMENT_NODE &&
-        selectedNode.tagName === "A"
-          ? selectedNode
-          : selectedNode.parentElement.closest("a")
-
-      if (url) {
-        const link = document.createElement("a")
-        link.href = url
-        link.target = "_blank"
-        link.textContent = selection.toString()
-        link.setAttribute("rel", "noreferrer")
-
-        range.deleteContents()
-        range.insertNode(link)
-
-        range.selectNodeContents(link)
-        selection.removeAllRanges()
-        selection.addRange(range)
-      } else if (linkNode) {
-        const linkText = document.createTextNode(linkNode.textContent)
-        linkNode.parentNode.replaceChild(linkText, linkNode)
-
-        range.setStart(linkText, 0)
-        range.setEnd(linkText, linkText.length)
-        selection.removeAllRanges()
-        selection.addRange(range)
-      }
+    switch (command) {
+      case 'createLink':
+        let url = prompt("Enter the URL:");
+        if (url) {
+          newHtml = `<a href="${url}" target="_blank" rel="noopener noreferrer">${selectedText}</a>`;
+        }
+        break;
+      case 'bold':
+        newHtml = `<strong>${selectedText}</strong>`;
+        break;
+      case 'italic':
+        newHtml = `<em>${selectedText}</em>`;
+        break;
+      default:
+        console.warn(`Unknown format command: ${command}`);
+        return; // Don't do anything if the command is unknown
     }
-  } else {
-    document.execCommand(command, false, null)
+
+    if (newHtml) {
+      // Replace selected text with formatted text
+      document.execCommand('insertHTML', false, newHtml); 
+    }
   }
 }
 
@@ -266,7 +264,7 @@ const createMessage = ({ from, text }) => {
   const message = document.createElement("div")
   message.classList.add("chatMessage")
   const span = document.createElement("span")
-  span.textContent = urlify(text)
+  span.innerHTML = urlify(text)
   message.appendChild(span)
 
   if (from === CURRENT_USER_IP) message.classList.add("chatMessageFrom")
