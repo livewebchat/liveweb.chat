@@ -4,6 +4,7 @@ import { Session } from "../core/_models"
 import { Dispatch, SetStateAction, useEffect, useState } from "react"
 import { useAuth } from "../../auth"
 import { io } from "socket.io-client"
+import { ReactCountryFlag } from 'react-country-flag';
 
 const socket = io("https://localhost:3000")
 
@@ -64,7 +65,7 @@ export const SessionItem: React.FC<Props> = ({
         <div>
           <div className="d-flex align-items-center fs-5 fw-bolder mb-2">
             {countryCode ? (
-              // <ReactCountryFlag countryCode={countryCode} svg />
+              <ReactCountryFlag countryCode={countryCode} svg />
               ""
             ) : (
               <span style={{ width: 22 }}></span>
