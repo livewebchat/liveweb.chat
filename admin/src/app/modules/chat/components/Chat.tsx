@@ -24,6 +24,8 @@ const Chat: FC = () => {
 
   // Fetch sessions from server via Socket.IO
   useEffect(() => {
+    const socketInstance = socketRef.current
+
     const fetchSessions = () => {
       socketRef.current.emit("fetchSessions")
     }
@@ -70,10 +72,10 @@ const Chat: FC = () => {
     })
 
     return () => {
-      socketRef.current.off("sessionsData")
-      socketRef.current.off("sessionUpdated")
-      socketRef.current.off("sessionConnected")
-      socketRef.current.off("sessionDisconnected")
+      socketInstance.off("sessionsData")
+      socketInstance.off("sessionUpdated")
+      socketInstance.off("sessionConnected")
+      socketInstance.off("sessionDisconnected")
     }
   }, [])
 
