@@ -1,7 +1,7 @@
 "use strict"
 
 import { io } from "https://cdn.socket.io/4.7.5/socket.io.esm.min.js"
-const API_URL = "https://liveweb.chat/api"
+const API_URL = "https://api.liveweb.chat"
 const socket = io(API_URL)
 
 let CURRENT_USER_IP = null

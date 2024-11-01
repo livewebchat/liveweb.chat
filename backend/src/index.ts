@@ -33,7 +33,7 @@ io.on("connection", (socket) => handleSocketConnection(io, socket))
 // Start server
 const PORT = process.env.PORT
 server.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`)
+  console.log(`Server running on https://localhost:${PORT}`)
 })
 
 // Schedule to check inactive sessions every 30 minutes
