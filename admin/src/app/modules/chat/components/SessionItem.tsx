@@ -5,7 +5,7 @@ import { Dispatch, SetStateAction, useEffect, useState } from "react"
 import { io } from "socket.io-client"
 import { countries } from "../core/countries"
 
-const socket = io("https://localhost:3005")
+const socket = io("https://backend.liveweb.chat:3000")
 
 interface Props {
   session: Session
