@@ -11,7 +11,7 @@ import { io } from "socket.io-client"
 import { Message, Session } from "../core/_models"
 import { convertTimestampToReadableOnlyHour } from "../core/_helpers"
 
-const socket = io("https://backend.liveweb.chat:3000")
+const socket = io("https://localhost:3000")
 
 type Props = {
   currentSession: Session
