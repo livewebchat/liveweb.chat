@@ -1,11 +1,11 @@
 // import ReactCountryFlag from "react-country-flag"
+import CountryFlag from "../../countries/_CountryFlag"
 import { ip2Location } from "../core/_helpers"
 import { Session } from "../core/_models"
 import { Dispatch, SetStateAction, useEffect, useState } from "react"
 import { io } from "socket.io-client"
-import { countries } from "../core/countries"
 
-const socket = io("https://localhost:3000")
+const socket = io(import.meta.env.VITE_APP_LWC_API_URL)
 
 interface Props {
   session: Session
@@ -64,8 +64,9 @@ export const SessionItem: React.FC<Props> = ({
         <div>
           <div className="d-flex align-items-center fs-5 fw-bolder mb-2">
             {countryCode ? (
-              // <ReactCountryFlag countryCode={countryCode} svg />
-              <></>
+              <span style={{ width: 22 }}>
+                <CountryFlag code="US" />
+              </span>
             ) : (
               <span style={{ width: 22 }}></span>
             )}

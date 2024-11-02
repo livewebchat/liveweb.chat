@@ -13,7 +13,7 @@ import { SessionItem } from "./SessionItem"
 import { useAuth } from "../../auth"
 
 // Initialize socket connection (adjust URL as necessary)
-const socket = io("https://localhost:3000")
+const socket = io(import.meta.env.VITE_APP_LWC_API_URL)
 
 const Chat: FC = () => {
   const [sessionsLoading, setSessionsLoading] = useState(true)
