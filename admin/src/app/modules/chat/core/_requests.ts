@@ -3,9 +3,9 @@ import { Message, Session } from "./_models"
 
 const API_URL =
   "http://" +
-  import.meta.env.VITE_APP_DB_HOST +
+  import.meta.env.VITE_APP_LWC_API_URL +
   ":" +
-  import.meta.env.VITE_APP_DB_PORT
+  import.meta.env.VITE_APP_LWC_API_PORT
 
 // Fetch active session by user IP
 export const getActiveSessionByUserIP = async (
