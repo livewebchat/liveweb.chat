@@ -2,7 +2,6 @@
 import { Message, Session } from "./_models"
 
 const API_URL =
-  "https://" +
   import.meta.env.VITE_APP_LWC_API_URL +
   ":" +
   import.meta.env.VITE_APP_LWC_API_URL
