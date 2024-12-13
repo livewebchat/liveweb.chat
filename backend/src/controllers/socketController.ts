@@ -25,6 +25,7 @@ export const handleSocketConnection = (io: Server, socket: Socket) => {
   // Connect to a session and update its 'remote.connected' field
   socket.on("connectToSession", async ({ sessionId, agentName }) => {
     try {
+      console.log("connecting to session ooooo")
       const response = await fetch(`/sessions/${sessionId}/connect`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },

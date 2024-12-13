@@ -5,7 +5,7 @@ const API_URL =
   "http://" +
   import.meta.env.VITE_APP_LWC_API_URL +
   ":" +
-  import.meta.env.VITE_APP_LWC_API_PORT
+  import.meta.env.VITE_APP_LWC_API_URL
 
 // Fetch active session by user IP
 export const getActiveSessionByUserIP = async (

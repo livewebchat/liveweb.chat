@@ -133,7 +133,10 @@ const Chat: FC = () => {
                       />
                     </div>
                   </div>
-                  <div className="card-body pt-5" id="kt_chat_contacts_body">
+                  <div
+                    className="card-body pt-5"
+                    id="kt_chat_contacts_body"
+                  >
                     <div
                       className="scroll-y me-n5 pe-5 h-200px h-lg-auto"
                       data-kt-scroll="true"
@@ -157,13 +160,22 @@ const Chat: FC = () => {
 
               <div className="flex-lg-row-fluid ms-lg-7 ms-xl-10">
                 {currentSession ? (
-                  <div className="card" id="kt_chat_messenger">
-                    <div className="card-header" id="kt_chat_messenger_header">
+                  <div
+                    className="card"
+                    id="kt_chat_messenger"
+                  >
+                    <div
+                      className="card-header"
+                      id="kt_chat_messenger_header"
+                    >
                       <div className="card-title">
                         <div className="symbol-group symbol-hover"></div>
                         <div className="d-flex justify-content-center flex-column me-3">
                           <div className="fs-4 fw-bolder text-gray-900 me-1 py-4 lh-1">
-                            <SessionItem session={currentSession} header />
+                            <SessionItem
+                              session={currentSession}
+                              header
+                            />
                             <span
                               className={`badge badge-${
                                 currentSession.remote?.connected
@@ -235,7 +247,10 @@ const Chat: FC = () => {
                       />
                     </div>
                   </div>
-                  <div className="card-body pt-5" id="kt_chat_contacts_body">
+                  <div
+                    className="card-body pt-5"
+                    id="kt_chat_contacts_body"
+                  >
                     <div
                       className="scroll-y me-n5 pe-5 h-200px h-lg-auto"
                       data-kt-scroll="true"
