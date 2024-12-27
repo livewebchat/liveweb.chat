@@ -189,6 +189,7 @@ const createSession = async (userIPaddress) => {
 
 // Function to send a message
 const sendMessage = async (sessionId, sender, text) => {
+  console.log(sessionId)
   try {
     const response = await fetch(`${API_URL}/sessions/${sessionId}/connect`, {
       method: "POST",

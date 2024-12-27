@@ -3,6 +3,7 @@ import dotenv from "dotenv"
 
 // Load environment variables
 dotenv.config({ path: __dirname + "/../../.env" })
+console.log(__dirname)
 
 export const db = mysql.createPool({
   host: process.env.DB_HOST,
